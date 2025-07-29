@@ -20,9 +20,9 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update  # Automatically updates schema based on entities (use cautiously in production)
-    show-sql: true       # Prints SQL queries to console
-    open-in-view: false  # Recommended to keep off for stateless apps (REST APIs)
+      ddl-auto: update
+    show-sql: true
+    open-in-view: false
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
@@ -40,8 +40,8 @@ spring:
 
   sql:
     init:
-      mode: always                    # Ensures data.sql runs on every app startup
-      data-locations: classpath:data.sql  # Path to the SQL insert file
+      mode: always
+      data-locations: classpath:data.sql
 
 logging:
   level:
