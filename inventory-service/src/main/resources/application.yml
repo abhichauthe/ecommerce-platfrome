@@ -1,0 +1,50 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: inventory-service
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/inventoryService?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&useLegacyDatetimeCode=false
+    username: admin
+    password: admin123
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+      connection-timeout: 20000
+      idle-timeout: 300000
+      leak-detection-threshold: 60000
+
+  jpa:
+    hibernate:
+      ddl-auto: update  # Automatically updates schema based on entities (use cautiously in production)
+    show-sql: true       # Prints SQL queries to console
+    open-in-view: false  # Recommended to keep off for stateless apps (REST APIs)
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        format_sql: true
+        use_sql_comments: true
+        temp:
+          use_jdbc_metadata_defaults: false
+        globally_quoted_identifiers: true
+        globally_quoted_identifiers_skip_column_definitions: true
+        jdbc:
+          batch_size: 20
+          batch_versioned_data: true
+        order_inserts: true
+        order_updates: true
+
+  sql:
+    init:
+      mode: always                    # Ensures data.sql runs on every app startup
+      data-locations: classpath:data.sql  # Path to the SQL insert file
+
+logging:
+  level:
+    com.microservices.inventory: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
