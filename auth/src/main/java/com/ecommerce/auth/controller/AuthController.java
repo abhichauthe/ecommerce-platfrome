@@ -17,7 +17,6 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin(origins = "*") // Add CORS support for testing
 public class AuthController {
 
     private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
