@@ -1,6 +1,5 @@
 package com.microservices.order_service.controller;
 
-
 import com.microservices.order_service.dto.OrderRequest;
 import com.microservices.order_service.dto.OrderResponse;
 import com.microservices.order_service.entity.Order;
@@ -10,9 +9,11 @@ import com.microservices.order_service.exception.OrderNotFoundException;
 import com.microservices.order_service.exception.ProductNotAvailableException;
 import com.microservices.order_service.service.OrderService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,7 +24,6 @@ public class OrderController {
 
     private final OrderService orderService;
 
-    @Autowired
     public OrderController(OrderService orderService) {
         this.orderService = orderService;
     }
@@ -31,6 +31,8 @@ public class OrderController {
     @PostMapping("/place")
     public ResponseEntity<OrderResponse> placeOrder(@Valid @RequestBody OrderRequest orderRequest) {
         try {
+            String username = getAuthenticatedUsername();
+            orderRequest.setCustomerEmail(username);
             OrderResponse orderResponse = orderService.placeOrder(orderRequest);
             return ResponseEntity.status(HttpStatus.CREATED).body(orderResponse);
         } catch (ProductNotAvailableException | InsufficientStockException e) {
@@ -45,6 +47,7 @@ public class OrderController {
     }
 
     @GetMapping("/all")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<Order>> getAllOrders() {
         try {
             List<Order> orders = orderService.getAllOrders();
@@ -67,6 +70,7 @@ public class OrderController {
     }
 
     @GetMapping("/customer/{customerEmail}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<Order>> getOrdersByCustomerEmail(@PathVariable String customerEmail) {
         try {
             List<Order> orders = orderService.getOrdersByCustomerEmail(customerEmail);
@@ -77,6 +81,7 @@ public class OrderController {
     }
 
     @PutMapping("/{orderId}/status")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Order> updateOrderStatus(
             @PathVariable Long orderId,
             @RequestParam OrderStatus status) {
@@ -102,5 +107,10 @@ public class OrderController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
+    }
+
+    private String getAuthenticatedUsername() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return authentication.getName();
     }
 }

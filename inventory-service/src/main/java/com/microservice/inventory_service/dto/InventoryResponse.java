@@ -15,5 +15,4 @@ public class InventoryResponse {
     private Integer availableQuantity;
     private String message;
 
-
 }

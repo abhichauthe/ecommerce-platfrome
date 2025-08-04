@@ -1,0 +1,24 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: auth-service
+  main:
+    allow-circular-references: true
+
+ecommerce:
+  auth:
+    jwt-secret: ${JWT_SECRET:ThisIsAVerySecureSecretKeyForJWTTokenGenerationThatIsAtLeast32BytesLongAndSecureEnoughForHS512Algorithm}
+    jwt-expiration: ${JWT_EXPIRATION:86400000}
+
+jwt:
+  secret: ${JWT_SECRET:ThisIsAVerySecureSecretKeyForJWTTokenGenerationThatIsAtLeast32BytesLongAndSecureEnoughForHS512Algorithm}
+  expiration: ${JWT_EXPIRATION:86400000}
+
+logging:
+  level:
+    com.ecommerce.auth: DEBUG
+    org.springframework.security: DEBUG
+    org.springframework.web: DEBUG
+    root: INFO

@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8082
 
 spring:
   application:
@@ -38,12 +38,11 @@ spring:
         order_inserts: true
         order_updates: true
 
-# Configuration for inventory service URL
+
 inventory:
   service:
     url: http://localhost:8081
 
-# Feign client configuration
 feign:
   client:
     config:

@@ -1,6 +1,5 @@
 package com.microservice.inventory_service.controller;
 
-import com.microservice.inventory_service.InventoryServiceApplication;
 import com.microservice.inventory_service.dto.InventoryResponse;
 import com.microservice.inventory_service.entity.Inventory;
 import com.microservice.inventory_service.service.InventoryService;
@@ -8,6 +7,9 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -35,11 +37,10 @@ public class InventoryController {
                     .availableQuantity(0)
                     .message("Error checking stock: " + e.getMessage())
                     .build();
-
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
-
         }
     }
+
     @GetMapping("/all")
     public ResponseEntity<List<Inventory>> getAllInventory() {
         try {
@@ -51,8 +52,11 @@ public class InventoryController {
     }
 
     @PostMapping("/add")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Inventory> addInventory(@Valid @RequestBody Inventory inventory) {
         try {
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            String username = auth.getName();
             Inventory savedInventory = inventoryService.addInventory(inventory);
             return ResponseEntity.status(HttpStatus.CREATED).body(savedInventory);
         } catch (Exception e) {
@@ -61,6 +65,7 @@ public class InventoryController {
     }
 
     @PutMapping("/update/{productCode}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Inventory> updateQuantity(
             @PathVariable String productCode,
             @RequestParam Integer quantity) {
@@ -73,7 +78,9 @@ public class InventoryController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
     @PutMapping("/reduce/{productCode}")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<Inventory> reduceQuantity(
             @PathVariable String productCode,
             @RequestParam Integer quantity) {

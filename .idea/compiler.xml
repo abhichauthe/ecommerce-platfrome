@@ -9,7 +9,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="order-service" />
       </profile>
-      <profile name="Annotation profile for E-commerce Microservices Platform" enabled="true">
+      <profile name="Annotation profile for inventory-service" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
@@ -18,10 +18,20 @@
         </processorPath>
         <module name="inventory-service" />
       </profile>
+      <profile name="Annotation profile for E-commerce Microservices Platform" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.30/lombok-1.18.30.jar" />
+        </processorPath>
+        <module name="auth" />
+      </profile>
     </annotationProcessing>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="auth" options="-parameters" />
       <module name="ecommerce-platform" options="" />
       <module name="inventory-service" options="-parameters" />
       <module name="order-service" options="-parameters" />
